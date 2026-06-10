@@ -1,0 +1,18 @@
+[
+  {
+    "id": "binance",
+    "name": "Binance Pool",
+    "slug": "binance-pool",
+    "link": "https://pool.binance.com",
+    "addresses": [],
+    "tags": [
+      "/Binance/",
+      "Binance Pool",
+      "pool.binance.com",
+      "bch.poolbinance.com"
+    ],
+    "regexes": [
+      "binance"
+    ]
+  }
+]
