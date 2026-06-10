@@ -272,13 +272,43 @@ if __name__ == "__main__":
         # submit_share(POOL_HOST, POOL_PORT, WORKER, solution,
         #              EXTRANONCE1, EXTRANONCE2_LEN)
 
-        # Stage 3 — would broadcast a signed spending tx to mempool.space
-        # Requires a real signed transaction hex (wallet + private key):
+        # Stage 3 — sign a spending tx with Bitcore and broadcast to mempool.space
+        #
+        # Prerequisites (Node.js):
+        #   npm install bitcore-lib-cash
+        #
+        # Then generate + sign in Node:
+        #
+        #   const bitcore = require("bitcore-lib-cash");
+        #   const { PrivateKey, Address, Transaction } = bitcore;
+        #
+        #   const privKey = PrivateKey.fromWIF("<your WIF private key>");
+        #   const address = privKey.toAddress();
+        #
+        #   // UTXOs come from your Binance Pool payout address:
+        #   //   GET https://bch.mempool.space/api/address/<addr>/utxo
+        #   const utxo = {
+        #     txId:        "<unspent txid>",
+        #     outputIndex: 0,
+        #     address:     address.toString(),
+        #     script:      bitcore.Script(address).toHex(),
+        #     satoshis:    <amount in satoshis>,
+        #   };
+        #
+        #   const tx = new Transaction()
+        #     .from(utxo)
+        #     .to("<recipient BCH address>", utxo.satoshis - 500)  // 500 sat fee
+        #     .change(address)
+        #     .sign(privKey);
+        #
+        #   const rawHex = tx.serialize();
+        #
+        # Then pass rawHex here:
         #
         # print("\n" + "=" * 60)
         # print("Stage 3 — Broadcast transaction to mempool.space")
         # print("=" * 60)
-        # SIGNED_TX_HEX = "<your signed raw transaction hex here>"
+        # SIGNED_TX_HEX = rawHex   # from tx.serialize() above
         # txid = broadcast_transaction(SIGNED_TX_HEX, network="bch")
         # print(f"  View: https://bch.mempool.space/tx/{txid}")
 
