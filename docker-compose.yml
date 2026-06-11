@@ -21,6 +21,33 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=mongopassword
       - MONGO_INITDB_DATABASE=stratum-logger
 
+  centrifugo:
+    image: centrifugo/centrifugo:latest
+    ports:
+      - "8000:8000"
+    command: centrifugo --config=/centrifugo/config.json
+    volumes:
+      - ./centrifugo:/centrifugo
+    environment:
+      CENTRIFUGO_API_KEY: ${CENTRIFUGO_API_KEY}
+      CENTRIFUGO_TOKEN_HMAC_SECRET_KEY: ${CENTRIFUGO_TOKEN_HMAC_SECRET_KEY:-changeme}
+      CENTRIFUGO_ADMIN: "true"
+      CENTRIFUGO_ADMIN_PASSWORD: ${CENTRIFUGO_ADMIN_PASSWORD:-admin}
+      CENTRIFUGO_ADMIN_SECRET: ${CENTRIFUGO_ADMIN_SECRET:-adminsecret}
+
+  sparkscan-poller:
+    build: ./sparkscan-poller
+    restart: unless-stopped
+    environment:
+      SPARKSCAN_API_KEY: ${SPARKSCAN_API_KEY}
+      QCHAINS_TOKEN: ${QCHAINS_TOKEN:-btkn1p3wa0svvmt7txqp92r9h930lxz3ldq3dhdvglf5prx4e67f6mywqtvsdaq}
+      CENTRIFUGO_API_URL: http://centrifugo:8000/api/publish
+      CENTRIFUGO_API_KEY: ${CENTRIFUGO_API_KEY}
+      CENTRIFUGO_CHANNEL: ${CENTRIFUGO_CHANNEL:-Drq}
+      POLL_INTERVAL: ${POLL_INTERVAL:-10}
+    depends_on:
+      - centrifugo
+
   # Template for collector services
   collector-base: &collector-base
     build: ./collector
