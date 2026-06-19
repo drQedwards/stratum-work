@@ -1,0 +1,19 @@
+{
+  "name": "tx-workflow",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "SparkScan route planner + Flashnet swap executor for QCHAINS/DRQ → BTC → USDB",
+  "scripts": {
+    "plan": "node plan.mjs",
+    "execute": "node execute.mjs"
+  },
+  "dependencies": {
+    "bitcore-lib": "^10.10.7",
+    "@stacks/transactions": "^7.4.0",
+    "@stacks/network": "^7.3.1",
+    "@stacks/connect": "^21.0.0"
+  },
+  "optionalDependencies": {
+    "@buildonspark/spark-sdk": "latest"
+  }
+}
